@@ -1,0 +1,72 @@
+###
+POST http://192.168.115.113:8888/v1/producer/get_supported_protocol_features
+Content-Type: application/json
+
+
+###
+POST http://192.168.115.113:8888/v1/producer/schedule_protocol_feature_activations
+Content-Type: application/json
+
+{
+  "protocol_features_to_activate": [
+    "0ec7e080177b2c02b278d5088611686b49d739925a92d9bfcacd7fc6b74053bd"
+  ]
+}
+
+###
+POST http://192.168.115.113:8888/v1/chain/get_account
+Content-Type: application/json
+
+{
+  "account_name": "eosio.boot"
+}
+
+###
+POST http://192.168.115.113:8888/v1/chain/get_abi
+Content-Type: application/json
+
+{
+  "account_name": "eosio.boot"
+}
+
+###
+POST http://192.168.115.113:8888/v1/chain/get_info
+Content-Type: application/json
+
+###
+POST http://192.168.115.113:8889/v1/wallet/list_keys
+Content-Type: application/json
+
+[
+  "default",
+  "PW5K5sruT1w7K3QPcLCFcDomi7kmi5jJbBKUMfEsjZhBJvSuxXmV3"
+]
+
+
+###
+POST http://192.168.115.113:8888/v1/history/get_transaction
+Content-Type: application/json
+
+{
+  "id": "82e1b84f0cb6c6dfc6758df9ac92922aba4571456d0eb95513762e0fdda37315",
+  "block_hint": "128816"
+}
+
+###
+POST http://192.168.115.113:8889/v1/wallet/open
+Content-Type: application/json
+
+"default"
+
+
+###
+POST http://192.168.115.113:8888/v1/chain/abi_bin_to_json
+Content-Type: application/json
+
+{
+  "code": "eosio.token",
+  "action": "transfer",
+  "binargs": "00a6823403ea30550000000000ea305550c30000000000000453595300000000227472616e7366657220666f726d20656f73696f2e746f656b6e20746f20656f73696f"
+}
+
+

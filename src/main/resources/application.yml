@@ -1,0 +1,27 @@
+server:
+  port: 8082
+  servlet:
+    context-path: /
+
+logging:
+  config: classpath:log4j2.xml
+
+dapp:
+  serviceUrl:
+    chainUrl: http://192.168.115.113:8888/v1/
+    walletUrl: http://192.168.115.113:8889/v1/
+    ipfsUrl: http://127.0.0.1:1171/api
+    tokenUrl: http://127.0.0.1:1172/api
+  wallet:
+    name: default
+    password: PW5K5sruT1w7K3QPcLCFcDomi7kmi5jJbBKUMfEsjZhBJvSuxXmV3
+    unlockTime: 15
+
+contracts:
+  - code: eosio.token
+    action: transfer
+    account: eosio
+    permission: active
+    eosPublicKey: EOS6MRyAjQq8ud7hVNYcfnVPJqcVpscN5So8BhtHuGYqET5GDW5CV
+    ipfs: true
+    ipfsNode: args
