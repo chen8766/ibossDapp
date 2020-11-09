@@ -50,5 +50,5 @@ public interface ChainApiService {
 
     @Headers("Content-Type: application/json")
     @RequestLine("POST /chain/get_account")
-    Account getAccount(Map<String, String> requestFields);
+    Account getAccount(@Param("account_name") String accountName);
 }

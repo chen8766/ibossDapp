@@ -23,5 +23,6 @@ contracts:
     account: eosio
     permission: active
     eosPublicKey: EOS6MRyAjQq8ud7hVNYcfnVPJqcVpscN5So8BhtHuGYqET5GDW5CV
+    eosPrivateKey: 5JNPQ6R7GmcdhCAtp6NgAY2F4RxZxTvoiW7H2F2VFAy3PKkT5NJ
     ipfs: true
     ipfsNode: args

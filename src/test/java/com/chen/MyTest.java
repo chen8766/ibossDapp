@@ -18,12 +18,11 @@ public class MyTest {
     @Test
     public void test() {
         try {
-            Map<String, String> request = Collections.singletonMap("account_name", "eosio");
             ChainApiService apiService = Feign.builder()
                     .encoder(new JacksonEncoder())
                     .decoder(new JacksonDecoder())
                     .target(ChainApiService.class, "http://192.168.115.113:8888/v1");
-            Account account = apiService.getAccount(request);
+            Account account = apiService.getAccount("eosio");
             String key = null;
             for (Permission permission : account.getPermissions()) {
                 if ("default".equals(permission.getPermName())) {

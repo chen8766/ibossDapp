@@ -1,6 +1,7 @@
 package com.chen.web.eosapi;
 
 import com.chen.web.domain.*;
+import feign.Body;
 import feign.Headers;
 import feign.RequestLine;
 
@@ -42,4 +43,21 @@ public interface WalletApiService {
     @Headers("Content-Type: application/json")
     @RequestLine("POST /wallet/unlock")
     void unlockWallet(List<String> requestFields);
+
+
+    /**
+     * 获取所有密钥
+     * @param parameters [钱包名称，钱包密码]
+     * @return List<List<String>> 密钥
+     */
+    @RequestLine("POST /wallet/list_keys")
+    List<List<String>> listKeys(List<String> parameters);
+
+    /**
+     * 导入私钥
+     * @param requestFields [walletName, privateKey]
+     */
+    @Headers("Content-Type: application/json")
+    @RequestLine("POST /wallet/import_key")
+    void importKey(List<String> requestFields);
 }

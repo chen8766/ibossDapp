@@ -1,6 +1,5 @@
-package com.chen.web.configuration;
+package com.chen.web.config;
 
-import com.chen.web.configuration.DappConfig;
 import com.chen.web.eosapi.ChainApiService;
 import com.chen.web.eosapi.WalletApiService;
 import com.chen.web.exception.decoder.EosErrorDecoder;

@@ -1,7 +1,7 @@
 package com.chen.web.service;
 
-import com.chen.web.configuration.ContractConfig;
-import com.chen.web.configuration.DappConfig;
+import com.chen.web.config.ContractConfig;
+import com.chen.web.config.DappConfig;
 import com.chen.web.domain.*;
 import com.chen.web.eosapi.ChainApiService;
 import com.chen.web.eosapi.WalletApiService;
@@ -19,7 +19,7 @@ import java.util.Collections;
  * @date 2020-10-29-0:07
  */
 @Service
-public class PushTransactionService {
+public class TransactionService {
 
     @Autowired
     private ChainApiService chainApiService;

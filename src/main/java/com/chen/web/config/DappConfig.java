@@ -1,4 +1,4 @@
-package com.chen.web.configuration;
+package com.chen.web.config;
 
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.springframework.beans.factory.annotation.Value;

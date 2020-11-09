@@ -3,7 +3,7 @@ package com.chen.web.controller;
 import com.chen.web.domain.ResultStatus;
 import com.chen.web.domain.*;
 import com.chen.web.exception.EosApiException;
-import com.chen.web.service.PushTransactionService;
+import com.chen.web.service.TransactionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
@@ -24,7 +24,7 @@ import javax.validation.Valid;
 public class TransactionController {
 
     @Autowired
-    private PushTransactionService pushTransactionService;
+    private TransactionService transactionService;
 
     @PostMapping("/push_transaction")
     public ResponseBean<PushedTransaction> pushTransaction(@RequestBody @Valid TransactionReq transactionReq,
@@ -34,7 +34,7 @@ public class TransactionController {
                 throw new IllegalArgumentException(error.getDefaultMessage());
             }
             validateTransactionReq(transactionReq);
-            PushedTransaction pushedTransaction = pushTransactionService.pushTransaction(transactionReq);
+            PushedTransaction pushedTransaction = transactionService.pushTransaction(transactionReq);
             return new ResponseBean<>(ResultStatus.PUSH_SUCCESS, ResultStatus.PUSH_SUCCESS_DESC, pushedTransaction);
         } catch (EosApiException e) {
             return new ResponseBean<>(ResultStatus.PUSH_FAILURE, e.getFormatErrorMsg());

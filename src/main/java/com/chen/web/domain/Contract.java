@@ -11,6 +11,7 @@ public class Contract {
     private String account;
     private String permission;
     private String eosPublicKey;
+    private String eosPrivateKey;
     private String ipfs;
     private String ipfsNode;
 
@@ -52,6 +53,14 @@ public class Contract {
 
     public void setEosPublicKey(String eosPublicKey) {
         this.eosPublicKey = eosPublicKey;
+    }
+
+    public String getEosPrivateKey() {
+        return eosPrivateKey;
+    }
+
+    public void setEosPrivateKey(String eosPrivateKey) {
+        this.eosPrivateKey = eosPrivateKey;
     }
 
     public String getIpfs() {
