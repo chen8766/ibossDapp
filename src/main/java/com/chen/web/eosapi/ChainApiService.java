@@ -2,9 +2,12 @@ package com.chen.web.eosapi;
 
 import com.chen.web.domain.*;
 import com.chen.web.domain.account.Account;
+import feign.Feign;
 import feign.Headers;
 import feign.Param;
 import feign.RequestLine;
+import feign.jackson.JacksonDecoder;
+import feign.jackson.JacksonEncoder;
 
 import java.util.Map;
 

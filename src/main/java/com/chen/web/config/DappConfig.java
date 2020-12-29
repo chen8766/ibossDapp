@@ -1,5 +1,6 @@
 package com.chen.web.config;
 
+import lombok.extern.slf4j.Slf4j;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
@@ -14,6 +15,7 @@ import java.security.Security;
 
 @Component
 @Configuration
+@Slf4j
 public class DappConfig {
 
     @Value("${dapp.serviceUrl.chainUrl}")
@@ -33,7 +35,11 @@ public class DappConfig {
     private String walletUnlockTime;
 
     static {
-        Security.insertProviderAt(new BouncyCastleProvider(), 1);
+        try {
+            Security.insertProviderAt(new BouncyCastleProvider(), 1);
+        } catch (Exception e) {
+            log.error("注册BouncyCastleProvider异常 {}", e.getMessage(), e);
+        }
     }
 
     public String getChainUrl() {

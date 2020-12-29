@@ -4,12 +4,16 @@ import com.chen.web.domain.account.Account;
 import com.chen.web.domain.account.Permission;
 import com.chen.web.eosapi.ChainApiService;
 import com.chen.web.exception.EosBusinessException;
+import com.fasterxml.jackson.databind.JavaType;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.type.SimpleType;
 import feign.Feign;
 import feign.jackson.JacksonDecoder;
 import feign.jackson.JacksonEncoder;
 import org.junit.Test;
 import org.springframework.util.StringUtils;
 
+import java.io.IOException;
 import java.util.Collections;
 import java.util.Map;
 

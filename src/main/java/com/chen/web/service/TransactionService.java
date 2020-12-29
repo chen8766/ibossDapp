@@ -31,10 +31,11 @@ public class TransactionService {
     private DappConfig dappConfig;
 
     @Autowired
-    private ContractConfig contractConfig;
+    private IpfsService ipfsService;
 
-    public PushedTransaction pushTransaction(TransactionReq transactionReq) {
-        Contract contract = contractConfig.getConfigByCodeAndAction(transactionReq.getCode(), transactionReq.getAction());
+    public PushedTransaction pushTransaction(TransactionReq transactionReq) throws Exception {
+        transactionReq = ipfsService.pushIpfsAsDag(transactionReq);
+
         // 1.请求参数序列化
         AbiJsonToBinReq abiJsonToBinReq = new AbiJsonToBinReq();
         BeanUtils.copyProperties(transactionReq, abiJsonToBinReq);
@@ -46,14 +47,14 @@ public class TransactionService {
         // 3.获取最新区块信息
         Block block = chainApiService.getBlockById(headBlockNum);
         // 4.打开钱包
-        walletApiService.openWallet(dappConfig.getWalletName());
+        // walletApiService.openWallet(dappConfig.getWalletName());
         // 5.解锁钱包
-        walletApiService.unlockWallet(Arrays.asList(dappConfig.getWalletName(), dappConfig.getWalletPassword()));
+        // walletApiService.unlockWallet(Arrays.asList(dappConfig.getWalletName(), dappConfig.getWalletPassword()));
         // 6.交易签名
         // 6.1 创建授权
         TransactionAuthorization authorization = new TransactionAuthorization();
-        authorization.setActor(contract.getAccount());
-        authorization.setPermission(contract.getPermission());
+        authorization.setActor(transactionReq.getContract().getAccount());
+        authorization.setPermission(transactionReq.getContract().getPermission());
         // 6.2 创建交易action
         TransactionAction transactionAction = new TransactionAction();
         transactionAction.setAccount(transactionReq.getCode());
@@ -70,7 +71,7 @@ public class TransactionService {
         // 6.4 交易签名
         SignedPackedTransaction signedPackedTransaction =
                 walletApiService.signTransaction(Arrays.asList(packedTransaction,
-                Collections.singletonList(contract.getEosPublicKey()), chainInfo.getChainId()));
+                Collections.singletonList(transactionReq.getContract().getEosPublicKey()), chainInfo.getChainId()));
         // 7.交易上链
         return chainApiService.pushTransaction(new PushTransactionReq("none", packedTransaction, signedPackedTransaction.getSignatures()));
     }

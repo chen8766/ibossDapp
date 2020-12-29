@@ -15,12 +15,12 @@ public interface WalletApiService {
 
     /**
      * 签名
-     * @param signDigestReq 签名请求参数
-     * @return
+     * @param signDigestReq 请求参数
+     * @return 签名
      */
     @Headers("Content-Type: application/json")
     @RequestLine("POST /wallet/sign_digest")
-    SignDigestRsp signDigest(SignDigestReq signDigestReq);
+    String signDigest(SignDigestReq signDigestReq);
 
     /**
      * 交易签名

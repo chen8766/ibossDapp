@@ -1,7 +1,7 @@
 package com.chen.web.domain;
 
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import lombok.NonNull;
 
 /**
  * @author chen
@@ -13,7 +13,9 @@ public class TransactionReq {
 
     private String action;
 
-    private Object args;
+    private ObjectNode args;
+
+    private Contract contract;
 
     public String getCode() {
         return code;
@@ -31,20 +33,30 @@ public class TransactionReq {
         this.action = action;
     }
 
-    public Object getArgs() {
+    public ObjectNode getArgs() {
         return args;
     }
 
-    public void setArgs(Object args) {
+    public void setArgs(ObjectNode args) {
         this.args = args;
+    }
+
+    @NonNull
+    public Contract getContract() {
+        return contract;
+    }
+
+    public void setContract(Contract contract) {
+        this.contract = contract;
     }
 
     @Override
     public String toString() {
-        return "PushTransactionDTO{" +
+        return "TransactionReq{" +
                 "code='" + code + '\'' +
                 ", action='" + action + '\'' +
                 ", args=" + args +
+                ", contract=" + contract +
                 '}';
     }
 }

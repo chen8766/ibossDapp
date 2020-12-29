@@ -4,9 +4,13 @@ import com.chen.web.exception.EosApiException;
 import feign.Response;
 import feign.codec.ErrorDecoder;
 import feign.jackson.JacksonDecoder;
+import org.apache.commons.io.IOUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.Reader;
+import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 
 /**
@@ -15,20 +19,19 @@ import java.nio.charset.StandardCharsets;
  */
 public class EosErrorDecoder implements ErrorDecoder {
 
+    public static final Logger log = LoggerFactory.getLogger(EosErrorDecoder.class);
 
     private final ErrorDecoder defaultDecoder = new ErrorDecoder.Default();
 
 
     @Override
     public Exception decode(String methodKey, Response response) {
+        String s = null;
         try {
-            response = response.toBuilder().status(200).build();
-            Reader reader = response.body().asReader(StandardCharsets.UTF_8);
-            EosApiException eosApiException = (EosApiException) new JacksonDecoder().decode(response, EosApiException.class);
-            eosApiException.setMethodKey(methodKey);
-            return eosApiException;
+            s = IOUtils.toString(response.body().asInputStream(), "utf8");
         } catch (IOException e) {
-            return defaultDecoder.decode(methodKey, response);
+            e.printStackTrace();
         }
+        return defaultDecoder.decode(methodKey, response);
     }
 }

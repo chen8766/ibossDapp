@@ -1,19 +1,17 @@
 package com.chen.web.controller;
 
-import com.chen.web.domain.ResultStatus;
+import com.chen.web.config.ContractConfig;
 import com.chen.web.domain.*;
 import com.chen.web.exception.EosApiException;
 import com.chen.web.service.TransactionService;
+import feign.FeignException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import javax.validation.Valid;
 
 /**
  * @author chen
@@ -21,24 +19,27 @@ import javax.validation.Valid;
  */
 @RestController
 @RequestMapping("/v1/iboss/dapp")
+@Slf4j
 public class TransactionController {
 
     @Autowired
     private TransactionService transactionService;
 
+    @Autowired
+    private ContractConfig contractConfig;
+
     @PostMapping("/push_transaction")
-    public ResponseBean<PushedTransaction> pushTransaction(@RequestBody @Valid TransactionReq transactionReq,
-                                                           BindingResult bindingResult) {
+    public ResponseBean<PushedTransaction> pushTransaction(@RequestBody TransactionReq transactionReq) {
         try {
-            for (ObjectError error : bindingResult.getAllErrors()) {
-                throw new IllegalArgumentException(error.getDefaultMessage());
-            }
             validateTransactionReq(transactionReq);
+            transactionReq.setContract(contractConfig.getConfigByCodeAndAction(transactionReq.getCode(), transactionReq.getAction()));
             PushedTransaction pushedTransaction = transactionService.pushTransaction(transactionReq);
             return new ResponseBean<>(ResultStatus.PUSH_SUCCESS, ResultStatus.PUSH_SUCCESS_DESC, pushedTransaction);
-        } catch (EosApiException e) {
-            return new ResponseBean<>(ResultStatus.PUSH_FAILURE, e.getFormatErrorMsg());
+        } catch (FeignException e) {
+            log.error("接口请求失败: {}", e.contentUTF8(), e);
+            return new ResponseBean<>(ResultStatus.PUSH_FAILURE, e.getMessage() + e.contentUTF8());
         } catch (Exception e) {
+            log.error(e.getMessage(), e);
             return new ResponseBean<>(ResultStatus.PUSH_FAILURE, e.getMessage());
         }
     }

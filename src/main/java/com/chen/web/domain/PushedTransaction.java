@@ -10,6 +10,16 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class PushedTransaction {
     private String transactionId;
+    private Processed processed;
+
+    public Processed getProcessed() {
+        return processed;
+    }
+
+    @JsonProperty("processed")
+    public void setProcessed(Processed processed) {
+        this.processed = processed;
+    }
 
     public String getTransactionId() {
         return transactionId;

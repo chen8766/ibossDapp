@@ -1,5 +1,8 @@
 package com.chen.web.domain;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 /**
  * @author chen
  * @date 2020-11-02-22:44
@@ -8,18 +11,19 @@ public class ResponseBean<T> {
 
     private String respCode;
     private String respDesc;
-    private T data;
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private T result;
 
-    public ResponseBean(String respCode, String respDesc, T data) {
+    public ResponseBean(String respCode, String respDesc, T result) {
         this.respCode = respCode;
         this.respDesc = respDesc;
-        this.data = data;
+        this.result = result;
     }
 
     public ResponseBean(String respCode, String respDesc) {
         this.respCode = respCode;
         this.respDesc = respDesc;
-        this.data = null;
+        this.result = null;
     }
 
     public String getRespCode() {
@@ -38,11 +42,11 @@ public class ResponseBean<T> {
         this.respDesc = respDesc;
     }
 
-    public T getData() {
-        return data;
+    public T getResult() {
+        return result;
     }
 
-    public void setData(T data) {
-        this.data = data;
+    public void setResult(T result) {
+        this.result = result;
     }
 }

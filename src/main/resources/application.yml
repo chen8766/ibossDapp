@@ -2,6 +2,17 @@ server:
   port: 8082
   servlet:
     context-path: /
+  tomcat:
+    accesslog:
+      pattern: '%t [%I] %a "%r" %s (%D ms)'
+      enabled: true
+    max-threads: 100
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
 
 logging:
   config: classpath:log4j2.xml
@@ -10,8 +21,8 @@ dapp:
   serviceUrl:
     chainUrl: http://192.168.115.113:8888/v1/
     walletUrl: http://192.168.115.113:8889/v1/
-    ipfsUrl: http://127.0.0.1:1171/api
-    tokenUrl: http://127.0.0.1:1172/api
+    ipfsUrl: http://127.0.0.1:8766/api
+    tokenUrl: http://127.0.0.1:8766/api
   wallet:
     name: default
     password: PW5K5sruT1w7K3QPcLCFcDomi7kmi5jJbBKUMfEsjZhBJvSuxXmV3
