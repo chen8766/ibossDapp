@@ -2,7 +2,6 @@ package com.chen.web.controller;
 
 import com.chen.web.config.ContractConfig;
 import com.chen.web.domain.*;
-import com.chen.web.exception.EosApiException;
 import com.chen.web.service.TransactionService;
 import feign.FeignException;
 import lombok.extern.slf4j.Slf4j;

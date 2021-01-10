@@ -4,23 +4,18 @@ import com.chen.web.eosapi.ChainApiService;
 import com.chen.web.eosapi.IpfsApiService;
 import com.chen.web.eosapi.TokenApiService;
 import com.chen.web.eosapi.WalletApiService;
-import com.chen.web.exception.decoder.EosErrorDecoder;
+import feign.Client;
 import feign.Feign;
 import feign.Logger;
-import feign.Response;
 import feign.codec.ErrorDecoder;
 import feign.form.FormEncoder;
 import feign.jackson.JacksonDecoder;
 import feign.jackson.JacksonEncoder;
+import feign.okhttp.OkHttpClient;
 import feign.slf4j.Slf4jLogger;
-import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 
 /**
  * @author chen
@@ -33,6 +28,8 @@ public class FeignClientConfiguration {
     public static final ErrorDecoder.Default DEFAULT_ERROR_DECODER = new ErrorDecoder.Default();
     @Autowired
     private DappConfig dappConfig;
+
+    public static final OkHttpClient OK_HTTP_CLIENT = new OkHttpClient();
 
     @Bean
     public WalletApiService createWalletFeignClient() {
@@ -51,7 +48,7 @@ public class FeignClientConfiguration {
                 .encoder(new JacksonEncoder())
                 .decoder(new JacksonDecoder())
                 .logger(new Slf4jLogger())
-                .logLevel(Logger.Level.BASIC)
+                .logLevel(Logger.Level.FULL)
                 .errorDecoder(new ErrorDecoder.Default())
                 .target(ChainApiService.class, dappConfig.getChainUrl());
     }
@@ -69,6 +66,7 @@ public class FeignClientConfiguration {
 
     @Bean
     public TokenApiService createTokenFeignClient() {
+        // JacksonDecoder对返回的token无法解析
         return Feign.builder()
                 .encoder(new JacksonEncoder())
                 .logger(new Slf4jLogger())

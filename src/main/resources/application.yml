@@ -6,7 +6,13 @@ server:
     accesslog:
       pattern: '%t [%I] %a "%r" %s (%D ms)'
       enabled: true
-    max-threads: 100
+    max-threads: 200
+
+# 默认开启aop代理
+spring:
+  aop:
+    auto: true
+
 
 management:
   endpoints:
