@@ -2,15 +2,19 @@ package com.chen.web.controller;
 
 import com.chen.web.config.ContractConfig;
 import com.chen.web.domain.*;
+import com.chen.web.eosapi.ChainApiService;
 import com.chen.web.service.TransactionService;
+import com.chen.web.service.hystrix.HystrixTransactionService;
 import feign.FeignException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
 
 /**
  * @author chen
@@ -25,7 +29,13 @@ public class TransactionController {
     private TransactionService transactionService;
 
     @Autowired
+    private ChainApiService chainApiService;
+
+    @Autowired
     private ContractConfig contractConfig;
+
+    @Autowired
+    private ApplicationContext context;
 
     @PostMapping("/push_transaction")
     public ResponseBean<PushedTransaction> pushTransaction(@RequestBody TransactionReq transactionReq) {
@@ -56,9 +66,50 @@ public class TransactionController {
     }
 
     @PostMapping("/confirm_transaction")
-    public String confirmTransaction(@RequestBody ConfirmReq confirmReq) {
-        //todo 交易确认
-        System.out.println(confirmReq);
-        return "";
+    public Map<String, String> confirmTransaction(@RequestBody ConfirmReq confirmReq) {
+        HashMap<String, String> result = new HashMap<>();
+        try {
+            return transactionService.confirmTransaction(confirmReq);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        result.put("respCode", "20000");
+        result.put("respDesc", "上链失败");
+        result.put("block_num", String.valueOf(confirmReq.getBlockNum()));
+        result.put("trxId", confirmReq.getTransactionId());
+        return result;
+    }
+
+    @PostMapping("/push_transaction2")
+    public ResponseBean<PushedTransaction> pushTransaction2(@RequestBody TransactionReq transactionReq) {
+        try {
+            validateTransactionReq(transactionReq);
+            transactionReq.setContract(contractConfig.getConfigByCodeAndAction(transactionReq.getCode(), transactionReq.getAction()));
+
+            HystrixTransactionService hystrixTransactionService = context.getBean(HystrixTransactionService.class);
+            hystrixTransactionService.setTransactionReq(transactionReq);
+            PushedTransaction pushedTransaction = hystrixTransactionService.execute();
+
+            if (Objects.isNull(pushedTransaction)) {
+                return new ResponseBean<>(ResultStatus.PUSH_FAILURE, "服务不可用");
+            }
+            return new ResponseBean<>(ResultStatus.PUSH_SUCCESS, ResultStatus.PUSH_SUCCESS_DESC, pushedTransaction);
+        } catch (FeignException e) {
+            log.error("接口请求失败: {}", e.contentUTF8(), e);
+            return new ResponseBean<>(ResultStatus.PUSH_FAILURE, e.getMessage() + e.contentUTF8());
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            return new ResponseBean<>(ResultStatus.PUSH_FAILURE, e.getMessage());
+        }
+    }
+
+    @GetMapping("/getBlockById")
+    public Block getBlockById(String blockNum) {
+        return chainApiService.getBlockById2(blockNum);
+    }
+
+    @GetMapping("/getInfo")
+    public ChainInfo getInfo() {
+        return chainApiService.getInfo2();
     }
 }

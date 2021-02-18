@@ -5,11 +5,13 @@ import com.chen.web.domain.account.Account;
 import feign.Headers;
 import feign.Param;
 import feign.RequestLine;
+import org.springframework.cache.annotation.Cacheable;
 
 /**
  * @author chen
  * @date 2020-10-28-22:40
  */
+// @Headers("Connection: keep-alive")
 public interface ChainApiService {
 
     /**
@@ -18,6 +20,14 @@ public interface ChainApiService {
      */
     @RequestLine("GET /chain/get_info")
     ChainInfo getInfo();
+
+    /**
+     * 获取最新区块信息
+     * @return 最新区块信息
+     */
+    @RequestLine("GET /chain/get_info")
+    @Cacheable(cacheNames = "chainInfoCache", sync = true)
+    ChainInfo getInfo2();
 
     /**
      * 序列化请求参数
@@ -36,6 +46,16 @@ public interface ChainApiService {
     @Headers("Content-Type: application/json")
     @RequestLine("POST /chain/get_block")
     Block getBlockById(@Param("block_num_or_id") String blocNumOrId);
+
+    /**
+     * 获取区块信息
+     * @param blocNumOrId 区块编号
+     * @return 区块信息
+     */
+    @Headers("Content-Type: application/json")
+    @RequestLine("POST /chain/get_block")
+    @Cacheable(cacheNames="blockCache", sync = true)
+    Block getBlockById2(@Param("block_num_or_id") String blocNumOrId);
 
     /**
      * 数据上链

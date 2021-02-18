@@ -4,18 +4,21 @@ import com.chen.web.eosapi.ChainApiService;
 import com.chen.web.eosapi.IpfsApiService;
 import com.chen.web.eosapi.TokenApiService;
 import com.chen.web.eosapi.WalletApiService;
-import feign.Client;
 import feign.Feign;
 import feign.Logger;
+import feign.Retryer;
 import feign.codec.ErrorDecoder;
 import feign.form.FormEncoder;
 import feign.jackson.JacksonDecoder;
 import feign.jackson.JacksonEncoder;
 import feign.okhttp.OkHttpClient;
 import feign.slf4j.Slf4jLogger;
+import okhttp3.ConnectionPool;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author chen
@@ -29,7 +32,13 @@ public class FeignClientConfiguration {
     @Autowired
     private DappConfig dappConfig;
 
-    public static final OkHttpClient OK_HTTP_CLIENT = new OkHttpClient();
+    public static final OkHttpClient OK_HTTP_CLIENT;
+
+    static {
+        OK_HTTP_CLIENT = new OkHttpClient(new okhttp3.OkHttpClient.Builder()
+                .connectionPool(new ConnectionPool())
+                .build());
+    }
 
     @Bean
     public WalletApiService createWalletFeignClient() {
@@ -45,10 +54,12 @@ public class FeignClientConfiguration {
     @Bean
     public ChainApiService createChainFeignClient() {
         return Feign.builder()
+                // .client(OK_HTTP_CLIENT)
                 .encoder(new JacksonEncoder())
                 .decoder(new JacksonDecoder())
                 .logger(new Slf4jLogger())
                 .logLevel(Logger.Level.FULL)
+                .retryer(new Retryer.Default())
                 .errorDecoder(new ErrorDecoder.Default())
                 .target(ChainApiService.class, dappConfig.getChainUrl());
     }

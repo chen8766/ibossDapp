@@ -11,14 +11,23 @@ server:
 # 默认开启aop代理
 spring:
   aop:
-    auto: true
+    auto: false
+  application:
+    name: ibossDapp
 
+#  cache:
+#    type: none
+#    caffeine:
+#      spec: initialCapacity=50,maximumSize=1000,expireAfterWrite=30s
 
 management:
   endpoints:
     web:
       exposure:
         include: '*'
+  endpoint:
+    health:
+      show-details: always
 
 logging:
   config: classpath:log4j2.xml
@@ -41,5 +50,5 @@ contracts:
     permission: active
     eosPublicKey: EOS6MRyAjQq8ud7hVNYcfnVPJqcVpscN5So8BhtHuGYqET5GDW5CV
     eosPrivateKey: 5JNPQ6R7GmcdhCAtp6NgAY2F4RxZxTvoiW7H2F2VFAy3PKkT5NJ
-    ipfs: true
+    ipfs: false
     ipfsNode: args
